@@ -1,0 +1,24 @@
+{
+  "regeln": [
+    {
+      "name": "Begrüßung",
+      "wenn": ["hallo", "hi", "hey"],
+      "aktion": "freundlich begrüßen"
+    },
+    {
+      "name": "Hilfe",
+      "wenn": ["hilfe", "help"],
+      "aktion": "verständlich und Schritt für Schritt helfen"
+    },
+    {
+      "name": "Deutsch",
+      "wenn": ["deutsch", "german"],
+      "aktion": "auf Deutsch antworten"
+    },
+    {
+      "name": "Kontext",
+      "wenn": ["vorher", "zuvor", "gespräch", "kontext"],
+      "aktion": "den bisherigen Gesprächsverlauf einbeziehen"
+    }
+  ]
+}

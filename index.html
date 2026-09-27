@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0d12">
+  <title>LUMORA – Lokale KI</title>
+  <style>
+    :root {
+      --bg: #090b0f;
+      --panel: rgba(18, 21, 28, 0.92);
+      --panel-2: rgba(24, 27, 36, 0.94);
+      --border: rgba(255,255,255,.08);
+      --text: #f0f2f5;
+      --muted: #aeb5c0;
+      --accent: #8ab4f8;
+      --accent-2: #6ea8ff;
+      --user: #1d2533;
+      --danger: #ff6b7a;
+      --ok: #79d69b;
+      --shadow: 0 18px 60px rgba(0,0,0,.38);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: radial-gradient(circle at 50% -10%, #182033 0, var(--bg) 42%); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { min-height: 100vh; }
+    button, textarea { font: inherit; }
+    .app { min-height: 100vh; display: flex; flex-direction: column; }
+    header { height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; border-bottom: 1px solid var(--border); background: rgba(9,11,15,.74); backdrop-filter: blur(18px); position: sticky; top: 0; z-index: 5; }
+    .brand { display: flex; align-items: center; gap: 11px; }
+    .orb { width: 36px; height: 36px; border-radius: 50%; background: conic-gradient(from 210deg, #8ab4f8, #bda1ff, #7de1cf, #8ab4f8); box-shadow: 0 0 28px rgba(120,170,255,.28); }
+    .brand strong { font-size: 19px; letter-spacing: .16em; }
+    .subtitle { color: var(--muted); font-size: 12px; }
+    .status { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 12px rgba(121,214,155,.6); }
+    main { width: min(100%, 920px); flex: 1; margin: 0 auto; display: flex; flex-direction: column; padding: 24px 18px 136px; }
+    #messages { display: flex; flex-direction: column; gap: 14px; }
+    .welcome { padding: 52px 8px 20px; text-align: center; }
+    .welcome h1 { font-size: clamp(30px, 7vw, 50px); margin: 0 0 10px; letter-spacing: -.035em; }
+    .welcome p { max-width: 650px; margin: 0 auto; color: var(--muted); line-height: 1.6; }
+    .message { display: flex; gap: 12px; animation: in .2s ease; }
+    .message.user { justify-content: flex-end; }
+    .avatar { flex: 0 0 34px; width: 34px; height: 34px; border-radius: 50%; background: var(--panel-2); border: 1px solid var(--border); display: grid; place-items: center; font-size: 12px; color: var(--muted); }
+    .message.user .avatar { order: 2; background: var(--user); color: var(--text); }
+    .bubble { max-width: min(760px, 85vw); padding: 13px 15px; border-radius: 18px; border: 1px solid var(--border); background: var(--panel); line-height: 1.55; white-space: pre-wrap; box-shadow: 0 6px 24px rgba(0,0,0,.12); }
+    .message.user .bubble { background: var(--user); border-bottom-right-radius: 5px; }
+    .message.assistant .bubble { border-bottom-left-radius: 5px; }
+    .meta { margin-top: 6px; color: var(--muted); font-size: 10px; opacity: .72; }
+    .composer-wrap { position: fixed; left: 0; right: 0; bottom: 0; padding: 14px 14px 18px; background: linear-gradient(to top, rgba(9,11,15,1) 58%, rgba(9,11,15,0)); z-index: 4; }
+    .composer { width: min(100%, 920px); margin: 0 auto; display: flex; align-items: flex-end; gap: 9px; padding: 10px; border-radius: 22px; border: 1px solid var(--border); background: rgba(18,21,28,.95); box-shadow: var(--shadow); }
+    textarea { flex: 1; min-height: 48px; max-height: 160px; resize: none; background: transparent; color: var(--text); border: 0; outline: 0; padding: 11px 10px; line-height: 1.45; }
+    textarea::placeholder { color: #7f8794; }
+    .send { width: 44px; height: 44px; border: 0; border-radius: 16px; cursor: pointer; color: #0a0c11; background: linear-gradient(135deg, var(--accent), #c0abff); font-weight: 800; transition: transform .15s ease, filter .15s ease; }
+    .send:hover { transform: translateY(-1px); filter: brightness(1.07); }
+    .toolbar { display: flex; align-items: center; gap: 10px; margin: 0 auto 8px; width: min(100%, 920px); color: var(--muted); font-size: 11px; }
+    .toolbar button { border: 0; color: var(--muted); background: transparent; cursor: pointer; padding: 5px; }
+    .toolbar button:hover { color: var(--text); }
+    .badge { margin-left: auto; padding: 5px 8px; border: 1px solid var(--border); border-radius: 999px; }
+    .banner { margin: 0 auto 14px; width: min(100%, 920px); padding: 11px 13px; border: 1px solid var(--border); border-radius: 14px; background: rgba(20,24,31,.78); color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .banner.error { color: #ffd6da; border-color: rgba(255,107,122,.28); }
+    .banner.ok { color: #d9ffe6; border-color: rgba(121,214,155,.2); }
+    .hidden { display: none !important; }
+    @keyframes in { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 620px) {
+      header { height: 64px; padding: 0 12px; }
+      .status { display: none; }
+      main { padding-left: 10px; padding-right: 10px; }
+      .bubble { max-width: 88vw; }
+      .composer-wrap { padding: 10px 9px 12px; }
+      .composer { border-radius: 18px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><div class="orb"></div><div><strong>LUMORA</strong><div class="subtitle">lokale, datenbasierte KI</div></div></div>
+    <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">wird geladen …</span></div>
+  </header>
+
+  <div id="banner" class="banner hidden"></div>
+  <main>
+    <section id="messages">
+      <div class="welcome" id="welcome">
+        <h1>Hallo, ich bin LUMORA.</h1>
+        <p>Eine kleine lokale Sprach-KI. Sie nutzt deine JSON-Daten, Persönlichkeit, Regeln und den bisherigen Chat, um Antworten neu zu erzeugen.</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="composer-wrap">
+    <div class="toolbar">
+      <button id="clearBtn" type="button">Neuer Chat</button>
+      <button id="statsBtn" type="button">Modellinfo</button>
+      <span class="badge" id="modelBadge">lokal</span>
+    </div>
+    <div class="composer">
+      <textarea id="input" rows="1" placeholder="Nachricht an LUMORA …" aria-label="Nachricht"></textarea>
+      <button class="send" id="sendBtn" type="button" aria-label="Senden">➤</button>
+    </div>
+  </div>
+</div>
+
+<script src="./tokenizer.js"></script>
+<script src="./model.js"></script>
+<script>
+(function () {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const messages = $('messages');
+  const input = $('input');
+  const sendBtn = $('sendBtn');
+  const banner = $('banner');
+  const statusText = $('statusText');
+  const statusDot = $('statusDot');
+  const welcome = $('welcome');
+  let engine = null;
+  let data = {};
+
+  const FALLBACK_DATA = {
+    sprechen: {
+      muster: {
+        hallo: ['Hallo! LUMORA ist bereit.', 'Hey! Schön, dass du da bist.'],
+        hilfe: ['Gerne. Beschreibe, wobei du Hilfe brauchst.'],
+        'wer bist du': ['Ich bin LUMORA, eine kleine lokale KI.']
+      },
+      wissen: [{ thema: 'LUMORA', inhalt: 'LUMORA ist eine kostenlose lokale KI ohne externe API.' }]
+    },
+    persoenlichkeit: {
+      name: 'LUMORA',
+      beschreibung: 'LUMORA ist freundlich, neugierig und hilfsbereit.',
+      eigenschaften: ['freundlich', 'neugierig', 'kreativ', 'hilfsbereit'],
+      stil: { sprache: 'Deutsch' }
+    },
+    regeln: { regeln: [{ name: 'Begrüßung', wenn: ['hallo', 'hi'], aktion: 'freundlich begrüßen' }] }
+  };
+
+  function showBanner(text, type) {
+    banner.textContent = text;
+    banner.className = 'banner' + (type ? ' ' + type : '');
+  }
+
+  function addMessage(role, text, meta = '') {
+    if (welcome) welcome.classList.add('hidden');
+    const row = document.createElement('div');
+    row.className = 'message ' + role;
+    const avatar = document.createElement('div');
+    avatar.className = 'avatar';
+    avatar.textContent = role === 'user' ? 'DU' : 'L';
+    const body = document.createElement('div');
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = text;
+    body.appendChild(bubble);
+    if (meta) {
+      const m = document.createElement('div');
+      m.className = 'meta';
+      m.textContent = meta;
+      body.appendChild(m);
+    }
+    row.appendChild(avatar);
+    row.appendChild(body);
+    messages.appendChild(row);
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }
+
+  async function loadJSON(path) {
+    const response = await fetch(path, { cache: 'no-store' });
+    if (!response.ok) throw new Error(path + ' → HTTP ' + response.status);
+    return response.json();
+  }
+
+  async function init() {
+    try {
+      const [sprechen, persoenlichkeit, regeln] = await Promise.all([
+        loadJSON('./DATEN/Sprechen.json'),
+        loadJSON('./DATEN/persöhnlichkeit.json'),
+        loadJSON('./DATEN/regeln.json')
+      ]);
+      data = { sprechen, persoenlichkeit, regeln };
+      const tokenizer = new LUMORATokenizer().buildFromData(data);
+      engine = new LUMORAEngine(data, tokenizer);
+      statusText.textContent = 'bereit · JSON geladen';
+      showBanner('LUMORA hat Sprechen.json, persöhnlichkeit.json und regeln.json geladen. Das lokale Modell wurde daraus trainiert.', 'ok');
+      setTimeout(() => banner.classList.add('hidden'), 3800);
+    } catch (error) {
+      console.error(error);
+      // file:// blocks fetch() in many browsers. The app still remains functional
+      // with a clearly labeled embedded fallback, while HTTP hosting loads the JSON files normally.
+      data = FALLBACK_DATA;
+      const tokenizer = new LUMORATokenizer().buildFromData(data);
+      engine = new LUMORAEngine(data, tokenizer);
+      statusText.textContent = 'Fallback aktiv';
+      statusDot.style.background = '#f4c95d';
+      const localHint = location.protocol === 'file:'
+        ? 'Direkt per file:// blockiert der Browser den JSON-Ladevorgang. Für das vollständige Datenladen lokal: im LUMORA-Ordner `python3 -m http.server 8000` starten und dann http://127.0.0.1:8000 öffnen.'
+        : 'Die JSON-Dateien konnten nicht geladen werden. Prüfe, ob die Ordnerstruktur unverändert ist.';
+      showBanner('Hinweis: ' + localHint + ' Die Notfall-Datenkopie hält den Chat trotzdem funktionsfähig.', 'error');
+    }
+  }
+
+  function send() {
+    const text = input.value.trim();
+    if (!text || !engine) return;
+    addMessage('user', text);
+    input.value = '';
+    input.style.height = 'auto';
+    const ids = engine.encode(text);
+    const answer = engine.generate(text);
+    const stat = engine.stats();
+    addMessage('assistant', answer, `Token-IDs: [${ids.slice(0, 10).join(', ')}${ids.length > 10 ? ', …' : ''}] · lokale Generierung`);
+  }
+
+  sendBtn.addEventListener('click', send);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+  });
+  input.addEventListener('input', () => {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 160) + 'px';
+  });
+  $('clearBtn').addEventListener('click', () => {
+    if (!engine) return;
+    engine.history = [];
+    messages.innerHTML = '';
+    messages.appendChild(welcome);
+    welcome.classList.remove('hidden');
+  });
+  $('statsBtn').addEventListener('click', () => {
+    if (!engine) return;
+    const s = engine.stats();
+    showBanner(`Vokabular: ${s.vocabSize} · Trainingssätze: ${s.trainingSentences} · Trainingstoken: ${s.trainingTokens} · Kontextnachrichten: ${s.historyMessages}. Das Modell ist ein kleines autoregressives n-Gramm-Modell, kein großer Transformer.`, 'ok');
+  });
+
+  init();
+})();
+</script>
+</body>
+</html>

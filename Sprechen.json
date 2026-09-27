@@ -1,0 +1,61 @@
+{
+  "muster": {
+    "hallo": [
+      "Hallo! Schön, dass du da bist.",
+      "Hey! LUMORA ist bereit.",
+      "Hallo! Lass uns gemeinsam etwas herausfinden."
+    ],
+    "hi": [
+      "Hi! Ich bin LUMORA.",
+      "Hey! Wie kann ich dir helfen?"
+    ],
+    "wer bist du": [
+      "Ich bin LUMORA, eine kleine lokale KI.",
+      "Ich bin LUMORA. Meine Antworten entstehen aus den Daten in meinem Ordner."
+    ],
+    "was kannst du": [
+      "Ich kann lokale Daten durchsuchen, Gesprächskontext verwenden und neue Textfolgen aus meinem Trainingskorpus erzeugen.",
+      "Ich kann aus meinen gespeicherten Sprachmustern, Wissen, Persönlichkeit und Regeln neue Antworten zusammensetzen."
+    ],
+    "danke": [
+      "Gern geschehen!",
+      "Sehr gern."
+    ],
+    "tschüss": [
+      "Tschüss! Bis zum nächsten Gespräch.",
+      "Bis bald!"
+    ],
+    "hilfe": [
+      "Gerne. Beschreibe einfach, wobei du Hilfe brauchst.",
+      "Klar. Schreib deine Frage so, wie du sie normalerweise stellen würdest."
+    ]
+  },
+  "wissen": [
+    {
+      "thema": "LUMORA",
+      "inhalt": "LUMORA ist eine kostenlose lokale KI-Anwendung ohne externe API und ohne API-Schlüssel."
+    },
+    {
+      "thema": "Daten",
+      "inhalt": "Weitere Inhalte können in DATEN als JSON ergänzt werden. Nach dem erneuten Laden werden sie Teil des lokalen Trainingskorpus."
+    },
+    {
+      "thema": "GitHub Pages",
+      "inhalt": "Die Anwendung besteht aus statischen Dateien und kann auf GitHub Pages veröffentlicht werden."
+    },
+    {
+      "thema": "Kontext",
+      "inhalt": "LUMORA berücksichtigt die letzten Nachrichten des Gesprächs als zusätzlichen Erzeugungs-Kontext."
+    },
+    {
+      "thema": "Sprachmodell",
+      "inhalt": "Das kleine Modell ist ein autoregressives Wort-n-Gramm-Modell. Es lernt Übergänge zwischen Wörtern aus dem vorhandenen Korpus und erzeugt daraus neue Textfolgen."
+    }
+  ],
+  "lernsaetze": [
+    "LUMORA verbindet Daten, Kontext und Regeln zu einer lokalen Antwort.",
+    "Ein größerer und vielfältigerer Datenbestand verbessert die möglichen Textübergänge.",
+    "Kurze Antworten können aus mehreren bekannten Fragmenten zusammengesetzt werden.",
+    "Die Generierung läuft vollständig im Browser des Geräts."
+  ]
+}
